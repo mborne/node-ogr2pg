@@ -23,13 +23,14 @@ ogr2pg({
 
 | Name             | Required? | Description                                                      | Default  |
 | ---------------- | :-------: | ---------------------------------------------------------------- | -------- |
-| `inputPath`      | YES       | Input file path (.shp, .geojson, etc.)                           |          |
-| `encoding`       | NO        | Input encoding (UTF-8, LATIN1,...)                               | `UTF-8`  |
-| `tableName`      | YES       | Output table name                                                |          |
-| `createTable`    | NO        | Automatically create table (drop table if exists)                | `false`  |
-| `schemaName`     | NO        | Output schema name                                               | `public` |
-| `createSchema`   | NO        | Automatically create schema if not exists                        | `false`  |
-| `promoteToMulti` | NO        | Promote geometry to multi (ex : MultiPolygon instead of Polygon) | `false`  |
+| `inputPath`      |    YES    | Input file path (.shp, .geojson, etc.)                           |          |
+| `encoding`       |    NO     | Input encoding (UTF-8, LATIN1,...)                               | `UTF-8`  |
+| `tableName`      |    YES    | Output table name                                                |          |
+| `createTable`    |    NO     | Automatically create table (drop table if exists)                | `false`  |
+| `schemaName`     |    NO     | Output schema name                                               | `public` |
+| `createSchema`   |    NO     | Automatically create schema if not exists                        | `false`  |
+| `promoteToMulti` |    NO     | Promote geometry to multi (ex : MultiPolygon instead of Polygon) | `false`  |
+| `skipFailures`   |    NO     | skip failures when importing data                                | `false`  |
 
 ## License
 

@@ -4,16 +4,16 @@ const shell = require('shelljs');
 const _ = require('lodash');
 
 /**
- * 
- * Helper to import spatial files (dbf, shp, geojson, etc.) in PostGIS with 
+ *
+ * Helper to import spatial files (dbf, shp, geojson, etc.) in PostGIS with
  * ogr2ogr and psql.
- * 
+ *
  * @param {Object} options parameters
  * @param {String} options.inputPath input file to import
  * @param {String} [options.encoding="UTF-8"] input encoding (UTF-8, LATIN1,...)
- * @param {String} options.tableName target table
+ * @param {String} options.tableName target table
  * @param {Boolean} [options.createTable=false] Drop and create table according to file structure
- * @param {String} [options.schemaName="public"] target schema
+ * @param {String} [options.schemaName="public"] target schema
  * @param {Boolean} [options.createSchema=false] Create schema
  * @param {Boolean} [options.promoteToMulti=false] Promote geometry to multi-geometry (ex : MultiPolygon)
  * @return {Promise}
@@ -23,7 +23,8 @@ function ogr2pg(options){
         createTable: false,
         schemaName: 'public',
         createSchema: false,
-        promoteToMulti: false
+        promoteToMulti: false,
+        skipFailures: false
     });
 
     return new Promise(function(resolve,reject){
@@ -46,14 +47,18 @@ function ogr2pg(options){
         }
 
         commandParts.push('ogr2ogr');
-       
+
         commandParts.push('--config PG_USE_COPY YES');
         commandParts.push('-f PGDump /vsistdout/');
         commandParts.push('-lco GEOMETRY_NAME=geom');
 
         commandParts.push('-t_srs EPSG:4326');
 
-        commandParts.push('-lco precision=NO'); 
+        commandParts.push('-lco precision=NO');
+
+        if ( options.skipFailures ){
+            commandParts.push('-skipfailures');
+        }
 
         if ( options.promoteToMulti ){
             commandParts.push('-nlt PROMOTE_TO_MULTI');
@@ -77,7 +82,7 @@ function ogr2pg(options){
         commandParts.push('-nln '+options.tableName);
 
         commandParts.push('"'+options.inputPath+'"');
-        
+
         var command = commandParts.join(' ')+' | psql --quiet';
         debug(command);
         if (shell.exec(command).code !== 0) {
