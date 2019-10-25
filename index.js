@@ -2,6 +2,7 @@ const debug = require('debug')('ogr2pg');
 
 const shell = require('shelljs');
 const _ = require('lodash');
+const path = require('path');
 
 /**
  *
@@ -77,6 +78,11 @@ function ogr2pg(options){
         }else{
             commandParts.push('-lco DROP_TABLE=OFF');
             commandParts.push('-lco CREATE_TABLE=OFF');
+        }
+
+        /* csv specific */
+        if ( path.extname(options.inputPath) === 'csv' ){
+            commandParts.push('-oo EMPTY_STRING_AS_NULL=YES');
         }
 
         commandParts.push('-nln '+options.tableName);

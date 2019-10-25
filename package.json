@@ -1,6 +1,6 @@
 {
   "name": "@mborne/ogr2pg",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Helper to load spatial files with multiple formats into postgis",
   "main": "index.js",
   "scripts": {},
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/mborne/node-ogr2pg#readme",
   "dependencies": {
-    "lodash": "^4.17.11",
-    "shelljs": "^0.8.2"
+    "lodash": "^4.17.15",
+    "shelljs": "^0.8.3"
   }
 }
