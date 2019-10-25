@@ -81,7 +81,8 @@ function ogr2pg(options){
         }
 
         /* csv specific */
-        if ( path.extname(options.inputPath) === 'csv' ){
+        let inputExtension = path.extname(options.inputPath).toLowerCase();
+        if ( inputExtension == '.csv' ){
             commandParts.push('-oo EMPTY_STRING_AS_NULL=YES');
         }
 
