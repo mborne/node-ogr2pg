@@ -9,14 +9,14 @@ Provides an helper to invoke [ogr2ogr](https://www.gdal.org/ogr2ogr.html) and [p
 ```js
 const ogr2pg = require('@mborne/ogr2pg');
 
-ogr2pg({
+const result = await ogr2pg({
     'inputPath': 'place.shp',
     'tableName': 'place'
-}).then(function(){
-    console.log("Table public.place created from 'place.shp'");
-}).catch(function(err){
-    console.log(err.message);
 });
+
+console.log(result.status);
+console.log(result.message);
+console.log(result.command);
 ```
 
 ## Options

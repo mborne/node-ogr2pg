@@ -1,4 +1,4 @@
-name: Publish package to NPM
+name: Node.js Package
 
 on:
   release:
@@ -16,4 +16,4 @@ jobs:
       - run: npm install
       - run: npm publish --access=public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}

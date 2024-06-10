@@ -1,6 +1,6 @@
 {
   "name": "@mborne/ogr2pg",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Helper to load spatial files with multiple formats into postgis",
   "main": "index.js",
   "scripts": {
