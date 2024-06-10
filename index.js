@@ -5,40 +5,54 @@ const _ = require('lodash');
 const path = require('path');
 
 /**
+ * The complete Triforce, or one or more components of the Triforce.
+ * @typedef {object} Ogr2pgResult
+ * @property {string} status - success or error
+ * @property {string} message
+ * @property {string} command
+ */
+
+
+/**
  *
  * Helper to import spatial files (dbf, shp, geojson, etc.) in PostGIS with
  * ogr2ogr and psql.
  *
  * @param {Object} options parameters
- * @param {String} options.inputPath input file to import
- * @param {String} [options.encoding="UTF-8"] input encoding (UTF-8, LATIN1,...)
- * @param {String} options.tableName target table
- * @param {Boolean} [options.createTable=false] Drop and create table according to file structure
- * @param {String} [options.schemaName="public"] target schema
- * @param {Boolean} [options.createSchema=false] Create schema
- * @param {Boolean} [options.promoteToMulti=false] Promote geometry to multi-geometry (ex : MultiPolygon)
- * @return {Promise}
+ * @param {string} options.inputPath input file to import
+ * @param {string?} options.outputPath Allows to write result to a given file instead of running psql
+ * @param {string?} options.encoding input encoding (UTF-8, LATIN1,...)
+ * @param {string} options.tableName target table
+ * @param {string} [createTable=false] Drop and create table according to file structure
+ * @param {string} [schemaName="public"] target schema
+ * @param {boolean} [createSchema=false] Create schema
+ * @param {boolean} [promoteToMulti=false] Promote geometry to multi-geometry (ex : MultiPolygon)
+ *
+ * @return {Ogr2pgResult}
  */
-function ogr2pg(options){
-    var options = _.defaults(options,{
-        createTable: false,
-        schemaName: 'public',
-        createSchema: false,
-        promoteToMulti: false,
-        skipFailures: false
-    });
+async function ogr2pg(options){
+    const {
+        createTable = false,
+        schemaName = 'public',
+        createSchema = false,
+        promoteToMulti = false,
+        skipFailures = false,
+        outputPath = null
+    } = options;
 
     return new Promise(function(resolve,reject){
         if (!shell.which('ogr2ogr')) {
             reject({
                 'status': 'error',
-                'message': 'ogr2ogr not found'
+                'message': 'ogr2ogr not found',
+                'command': 'which ogr2ogr'
             });
         }
         if (!shell.which('psql')) {
             reject({
                 'status': 'error',
-                'message': 'psql not found'
+                'message': 'psql not found',
+                'command': 'which psql'
             });
         }
 
@@ -57,22 +71,22 @@ function ogr2pg(options){
 
         commandParts.push('-lco precision=NO');
 
-        if ( options.skipFailures ){
+        if ( skipFailures ){
             commandParts.push('-skipfailures');
         }
 
-        if ( options.promoteToMulti ){
+        if ( promoteToMulti ){
             commandParts.push('-nlt PROMOTE_TO_MULTI');
         }
 
-        if ( options.createSchema ){
+        if ( createSchema ){
             commandParts.push('-lco CREATE_SCHEMA=ON');
         }else{
             commandParts.push('-lco CREATE_SCHEMA=OFF');
         }
-        commandParts.push('-lco SCHEMA='+options.schemaName);
+        commandParts.push('-lco SCHEMA='+schemaName);
 
-        if ( options.createTable ){
+        if ( createTable ){
             commandParts.push('-lco DROP_TABLE=ON');
             commandParts.push('-lco CREATE_TABLE=ON');
         }else{
@@ -81,7 +95,7 @@ function ogr2pg(options){
         }
 
         /* csv specific */
-        let inputExtension = path.extname(options.inputPath).toLowerCase();
+        const inputExtension = path.extname(options.inputPath).toLowerCase();
         if ( inputExtension == '.csv' ){
             commandParts.push('-oo EMPTY_STRING_AS_NULL=YES');
         }
@@ -90,7 +104,13 @@ function ogr2pg(options){
 
         commandParts.push('"'+options.inputPath+'"');
 
-        var command = commandParts.join(' ')+' | psql --quiet';
+        if ( outputPath ){
+            commandParts.push(` > ${outputPath}`);
+        }else{
+            commandParts.push(' | psql --quiet');
+        }
+
+        const command = commandParts.join(' ');
         debug(command);
         if (shell.exec(command).code !== 0) {
             reject({
