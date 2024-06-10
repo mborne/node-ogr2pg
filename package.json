@@ -3,7 +3,10 @@
   "version": "0.2.1",
   "description": "Helper to load spatial files with multiple formats into postgis",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text --reporter=cobertura mocha",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mborne/node-ogr2pg.git"
@@ -23,7 +26,14 @@
   },
   "homepage": "https://github.com/mborne/node-ogr2pg#readme",
   "dependencies": {
-    "lodash": "^4.17.15",
-    "shelljs": "^0.8.3"
+    "lodash": "^4.17.21",
+    "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "coveralls": "^3.1.1",
+    "mocha": "^10.4.0",
+    "mocha-lcov-reporter": "^1.3.0",
+    "nyc": "^17.0.0"
   }
 }
