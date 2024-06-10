@@ -1,5 +1,7 @@
 # node-ogr2pg
 
+[![Node.js CI](https://github.com/mborne/node-ogr2pg/actions/workflows/node.js.yml/badge.svg)](https://github.com/mborne/node-ogr2pg/actions/workflows/node.js.yml) [![Coverage Status](https://coveralls.io/repos/github/mborne/node-ogr2pg/badge.svg?branch=master)](https://coveralls.io/github/mborne/node-ogr2pg?branch=master)
+
 ## Description
 
 Provides an helper to invoke [ogr2ogr](https://www.gdal.org/ogr2ogr.html) and [psql](https://www.postgresql.org/docs/current/static/app-psql.html) to import spatial file into [PostGIS](https://postgis.net/).
